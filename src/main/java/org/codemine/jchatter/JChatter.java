@@ -37,7 +37,10 @@ import java.util.Arrays;
 import static org.bukkit.ChatColor.*;
 
 /**
- * Name: JChatter.java Created: 30 May 2014
+ * The Main JavaPlugin Class, main purpose is to allow multiple plugins to all use this
+ * from a single instance, without having to shard it and risk naming conficts.
+ * <p>This class will just provide static methods to create new JChat objects. Just
+ * Have add a dependancy to your plugins plugin.yml file
  *
  * @author Relicum
  * @version 0.0.1
@@ -56,14 +59,33 @@ public class JChatter extends JavaPlugin implements Listener {
 
     }
 
+    /**
+     * Instantiates a new JChat Object
+     *
+     * @return a new instance of {@link org.codemine.jchatter.JChat}, all the doc's can be found there
+     */
     public static JChat getJChat() {
         return new JChat();
     }
 
-    public static JChat getJChat(String firstPart) {
-        return new JChat(firstPart);
+    /**
+     * Instantiates a new JChat Object
+     * <p>Messages are built in "parts" where all part share the same formatting and style.
+     *
+     * @param firstPartText the text can be the first part of a message.
+     *                      Bare in mind all text added here will share the same formatting.
+     * @return a new instance of {@link org.codemine.jchatter.JChat}, all the doc's can be found there
+     */
+    public static JChat getJChat(String firstPartText) {
+        return new JChat(firstPartText);
     }
 
+    /**
+     * Only experimental while testing this will be removed as soon as the basic bugs and features
+     * are coded.
+     *
+     * @param e the e
+     */
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
 
@@ -73,13 +95,16 @@ public class JChatter extends JavaPlugin implements Listener {
           .then("ADMIN")
           .color(BLUE)
           .style(ChatColor.UNDERLINE, ChatColor.ITALIC)
-          .file("http://jd.bukkit.org/beta/apidocs/overview-summary.html")
+          .link("http://jd.bukkit.org/beta/apidocs/overview-summary.html")
           .itemTooltip("&6The Display Name", Arrays.asList("&aFirst Lore Line ", "Second", "", "&bthird"))
           .then("||")
           .color(RED)
           .style(MAGIC);
-        System.out.println(jChat.toJSONString());
-        jChat.send(e.getPlayer());
+        //System.out.println(jChat.toJSONString());
+        //System.out.println(jChat.toOldMessageFormat());
+        if (!jChat.send("Relicum")) {
+            getLogger().severe("Unable to send message to player");
+        }
 
     }
 

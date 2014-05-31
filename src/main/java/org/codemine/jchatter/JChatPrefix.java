@@ -27,7 +27,8 @@
 package org.codemine.jchatter;
 
 /**
- * Name: PrefixUtil.java Created: 31 May 2014
+ * WIP Will soon apply you to create a standard message prefix. once and just
+ * reference it from here to prefix you messages. Mostly with your normal plugin prefix
  *
  * @author Relicum
  * @version 0.0.1

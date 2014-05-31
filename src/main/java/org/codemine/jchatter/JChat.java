@@ -209,9 +209,11 @@ public class JChat {
     }
 
     /**
-     * Suggest j chat.
+     * Suggest a command when a player clicks the current message part. This is very similar to {@link JChat#command(String)}
+     * <p>the only difference being the the command is only added to the users chat input window. Which they then just hit enter
+     * to run the command or add in an extra argument
      *
-     * @param command the command
+     * @param command the command that the player will be displayed to the player when this message part is clicked.
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat suggest(final String command) {
@@ -221,9 +223,14 @@ public class JChat {
     }
 
     /**
-     * Command j chat.
+     * Run a command when a player clicks the current message part.
+     * The command is ran exactly as if the player typed the command themselves.
+     * <p>The command will only run if the player has permission to run that command.
+     * The command can have any number of arguments. Basically if your command accepts it you can use it here.
      *
-     * @param command the command
+     *
+     * @param command the command that the player will be run when this message part is clicked.
+     *                Need to input the command exactly as if the player was typing it eg "/home" or "/home raid"
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat command(final String command) {
@@ -251,16 +258,17 @@ public class JChat {
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat itemTooltip(final String itemJSON) {
-        System.out.println(itemJSON);
         onHover("show_item", itemJSON);
         return this;
     }
 
     /**
-     * Item tooltip.
+     * Item tooltip. This displays an tool tip like an items Lore to the player when hovering over the text.
+     * <p>To use Color or styles use the & character followed by any Minecraft formatting code.
+     * To display a blank line in the lore just set the required line to "".
      *
-     * @param title the title
-     * @param lore  the lore
+     * @param title the title is the Item Display Title
+     * @param lore  the lore formatted as an {@link java.util.List<java.lang.String>} as you normally would using ItemMeta
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat itemTooltip(final String title, final List<String> lore) {
@@ -342,6 +350,7 @@ public class JChat {
      * To jSON string.
      *
      * @return the string
+     * @throws java.lang.RuntimeException "invalid message" if the message is not valid
      */
     public String toJSONString() {
 
@@ -370,34 +379,46 @@ public class JChat {
     }
 
     /**
-     * Send boolean.
+     * <p>Send the current JChat message to the specified player name.
+     * The player must be online to send the message
+     * </p>
      *
-     * @param player the player
-     * @return the boolean
+     * @param player the players string name the message is sent to
+     * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
+     * @throws org.bukkit.command.CommandException
      */
     public boolean send(String player) {
 
-        String cmd = "tellraw ";
-        String message = toJSONString();
-
-        try {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd + player + " " + message);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        if (isOnline(player))
+            return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + toJSONString());
+        else
+            try {
+                throw new Exception(player + "Is not currently online");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return false;
     }
 
     /**
-     * Send boolean.
+     * <p>Send the current JChat message to the specified {@link org.bukkit.entity.Player}.
+     * The player must be online to send the message
+     * </p>
      *
-     * @param player the player
-     * @return the boolean
+     * @param player the player the message is sent to
+     * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
      */
     public boolean send(Player player) {
         Validate.notNull(player, "To send a JChat message you must pass a valid Player object");
-        return send(player.getName());
+        if (isOnline(player))
+            return send(player.getName());
+        else
+            try {
+                throw new Exception(player.getName() + "Is not currently online");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return false;
     }
 
     // public abstract JChat save();
@@ -411,20 +432,34 @@ public class JChat {
      * <p/>
      * //TODO Add in fully functional error checking and reporting
      *
-     * @return the true if no errors occured, false if there was a problem
+     * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
      */
     public boolean send() {
         boolean dirty = false;
+
         for (Player player : Bukkit.getOnlinePlayers()) {
-            dirty = send(player.getName());
+            dirty = Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getName() + " " + toJSONString());
         }
         return dirty;
     }
 
+    private boolean isOnline(Object player) {
+        Player p;
+        if (!(player instanceof Player)) {
+            p = Bukkit.getPlayer((String) player);
+        } else {
+            p = (Player) player;
+        }
+
+        return p.isOnline();
+    }
+
     /**
-     * To old message format.
+     * Get a copy of the message in the Old style message syntax.
+     * <p>This strips out all the JSON formatting and events, and return
+     * the message still with full color and style formatted included.
      *
-     * @return the string
+     * @return the string containing the message in the old Format
      */
     public String toOldMessageFormat() {
 
@@ -433,6 +468,19 @@ public class JChat {
             result.append(part.color).append(part.text);
         }
         return result.toString();
+    }
+
+    /**
+     * Clear and resets all Field variables.
+     * can be useful if you are making messages to save, no don't need to
+     * instantiates a new instance of JChat to create another message
+     */
+    public void clear() {
+
+        _jChatParts.clear();
+        _jChatParts.add(new JChatPart());
+        _jsonString = null;
+        _dirty = false;
     }
 
     private JChatPart latest() {

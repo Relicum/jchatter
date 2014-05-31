@@ -26,14 +26,12 @@
 
 package org.codemine.jchatter;
 
-import net.minecraft.util.com.google.common.annotations.Beta;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
- * Name: JChatSender.java Created: 30 May 2014
- * <p>JChat message sender. Example class to send pre made JSON messages using the console
+ * JChat message sender, Example class to send pre made JSON messages using the console
  * and the tellraw command. The player is not required to have the tellraw permission.
  * <p>If you use the run_command in a message the command is run as the player so normal permissions apply.
  *
@@ -46,9 +44,14 @@ public class JChatSender {
 
     private static String prefix;
 
-    @Beta
+    /**
+     * THIS IS STILL UNDER CONSTRUCTION
+     * DO NO USE AS CURRENTLY DOES NOTHING
+     *
+     * @param pre the pre
+     */
     public static void setPrefix(String pre) {
-        Validate.isTrue(pre == null, "setPrefix args can not be Null");
+        Validate.notNull(pre, "setPrefix args can not be Null");
         prefix = pre;
     }
 
