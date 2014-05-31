@@ -14,4 +14,5 @@ This plugin uses a fluentAPI to chain the creation of messages quickly. The mess
 Included is a simple method to send to a single player or send to all players.
 
 There is also an abstract save and load method which can be used to save and load messages that are used often. This makes it more efficient due to not having to build the JSON message each time.
+
   
