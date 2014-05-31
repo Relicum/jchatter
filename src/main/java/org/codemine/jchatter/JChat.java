@@ -288,14 +288,6 @@ public class JChat {
                 sb.append(ChatColor.translateAlternateColorCodes('&', lore.get(i)));
             sb.append("\",");
         }
-
-/*        String s = "{id:1s,Count:1b,tag:" +
-                     "{display:" +
-                     "{Lore:" +
-                     "[%s]" +
-                     ",Name:\"%s\",}" +
-                     ",}" +
-                     ",Damage:0s,}";*/
         return String.format("{id:1s,Count:1b,tag:" +
                                "{display:" +
                                "{Lore:" +
