@@ -26,6 +26,7 @@
 
 package org.codemine.jchatter;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -66,22 +67,19 @@ public class JChatter extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
 
-        JChat jChat = getJChat("[");
-        jChat
-          .color(DARK_PURPLE)
-          .then("MCOITC")
-          .color(AQUA)
-          .then("] ")
-          .color(DARK_PURPLE)
-          .then()
+        JChat jChat = new JChat("||");
+        jChat.color(RED)
+          .style(MAGIC)
+          .then("ADMIN")
           .color(BLUE)
-          .style(BOLD)
-          .text("Here is a message in bold")
-          .command("/say hello")
-          .itemTooltip("&6The Display", Arrays.asList("&aMy First ", "My Second", "", "My third"))
-        ;
+          .style(ChatColor.UNDERLINE, ChatColor.ITALIC)
+          .file("http://jd.bukkit.org/beta/apidocs/overview-summary.html")
+          .itemTooltip("&6The Display Name", Arrays.asList("&aFirst Lore Line ", "Second", "", "&bthird"))
+          .then("||")
+          .color(RED)
+          .style(MAGIC);
         System.out.println(jChat.toJSONString());
-        jChat.send();
+        jChat.send(e.getPlayer());
 
     }
 

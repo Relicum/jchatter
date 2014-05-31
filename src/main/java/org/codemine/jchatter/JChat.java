@@ -53,6 +53,41 @@ import java.util.List;
  * <p/>
  * This class has been expired and built apon code by @bobacadodl and @spoonyloony. Big thanks for them for releasing there code.
  * As they have done all of JChatter is also allowed to be used in any way you choose.
+ * <p>A basic usage example. This will demonstrates a lot of the features and the final line will send the JSON message to the
+ * user with the name Relicum.
+ * <pre>
+ * {@code
+ *     JChat jChat = new JChat("[");
+ *     jChat.color(RED)
+ *     .style(BOLD)
+ *     .then("ADMIN")
+ *     .color(BLUE)
+ *     .style.(UNDERLINE,ITALIC)
+ *     .command("/say hello")
+ *     .itemTooltip("&6The Display Name", Arrays.asList("&aFirst Lore Line ", "Second", "", "&bthird"))
+ *     .then("]")
+ *     .color(RED)
+ *     .style(BOLD)
+ *     .send("Relicum");
+ *     }*
+ * </pre>
+ * <p>To get the JSON string itself, which you can save to disk or store in a Field replace the .send() line with
+ * <pre>
+ *     {@code
+ *     .toJSONString();
+ *     }*
+ * </pre>
+ * <p>This will output the following string which is the full JSON formatted message. As you can see the API makes it
+ * much easier to build and no need to know any JSON at all. This string can be saved to disk or to a Field this is a good idea
+ * if you will be using the message a lot as it doesn't require the string to be rebuilt each time.For more info on sending
+ * pre made messages see {@link JChatSender}
+ * <br></br>
+ * <pre>
+ *  {"text":"","extra":[{"text":"[","color":"red","bold":true},{"text":"ADMIN","color":"blue","underlined":true,"italic":true,
+ *  "clickEvent":{"action":"run_command","value":"/say hello"},"hoverEvent":{"action":"show_item","value":"{id:1s,Count:1b,
+ *  tag:{display:{Lore:[0:\"§aFirst Lore Line \",1:\"Second\",2:\" \",3:\"§bthird\",],Name:\"§6The Display Name\",},},Damage:0s,}"}},
+ *  {"text":"]","color":"red","bold":true}]}
+ * </pre>
  *
  * @author Relicum
  * @version 0.0.1
@@ -64,6 +99,13 @@ public class JChat {
     private boolean _dirty;
     private boolean _save = true;
 
+    /**
+     * Instantiates a new JChat Object
+     * <p>Messages are built in "parts" where all part share the same formatting and style.
+     *
+     * @param firstPartText the text can be the first part of a message.
+     *                      Bare in mind all text added here will share the same formatting.
+     */
     public JChat(final String firstPartText) {
 
         _jChatParts = new ArrayList<>();
@@ -72,6 +114,9 @@ public class JChat {
         _dirty = false;
     }
 
+    /**
+     * Instantiates a new JChat Object
+     */
     public JChat() {
 
         _jChatParts = new ArrayList<JChatPart>();
@@ -80,6 +125,13 @@ public class JChat {
         _dirty = false;
     }
 
+    /**
+     * Text that forms part of the message. Each message part can only contain 1 piece of text.
+     * <p>Message parts are separate by using the {@link JChat#then()} or {@link JChat#then(Object)}
+     *
+     * @param text the text that will form this part of the message
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat text(String text) {
 
         JChatPart latest = latest();
@@ -91,6 +143,14 @@ public class JChat {
         return this;
     }
 
+    /**
+     * Used to set the color of this part of the message.
+     * Any color from the {@link org.bukkit.ChatColor} can be passed
+     *
+     * @param color the color the text will be displayed in if unset it defaults to white
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     * @throws java.lang.IllegalArgumentException if the color is not valid
+     */
     public JChat color(final ChatColor color) {
 
         if (!color.isColor()) {
@@ -101,6 +161,14 @@ public class JChat {
         return this;
     }
 
+    /**
+     * Used to Style this part of the message.Chat styles are only applied to the current part of the message.
+     *
+     * @param styles the {@link org.bukkit.ChatColor} any of the avaiable style options can be used.
+     *               Pass in one than one style separated with a ',' if you require multiple styles.
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     * @throws java.lang.IllegalArgumentException if the style is not valid
+     */
     public JChat style(ChatColor... styles) {
 
         for (final ChatColor style : styles) {
@@ -113,58 +181,122 @@ public class JChat {
         return this;
     }
 
+    /**
+     * Opens a file at the specified path.
+     * Currently this does nothing think it is part of 1.8
+     * Would advise not to use.
+     *
+     * @param path the path
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat file(final String path) {
 
         onClick("open_file", path);
         return this;
     }
 
+    /**
+     * Make the current message part a click able link. Just like on a web page. The text you click on
+     * does not need to be a URL anymore. It will use the URL you specify here
+     *
+     * @param url the url that will be opened in the players browser.
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat link(final String url) {
 
         onClick("open_url", url);
         return this;
     }
 
+    /**
+     * Suggest j chat.
+     *
+     * @param command the command
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat suggest(final String command) {
 
         onClick("suggest_command", command);
         return this;
     }
 
+    /**
+     * Command j chat.
+     *
+     * @param command the command
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat command(final String command) {
 
         onClick("run_command", command);
         return this;
     }
 
+    /**
+     * Achievement tooltip.
+     *
+     * @param name the name
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat achievementTooltip(final String name) {
 
         onHover("show_achievement", "achievement." + name);
         return this;
     }
 
+    /**
+     * Item tooltip.
+     *
+     * @param itemJSON the item jSON
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat itemTooltip(final String itemJSON) {
         System.out.println(itemJSON);
         onHover("show_item", itemJSON);
         return this;
     }
 
+    /**
+     * Item tooltip.
+     *
+     * @param title the title
+     * @param lore  the lore
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat itemTooltip(final String title, final List<String> lore) {
         Validate.notNull(title, "You have not passed a display title for the itemToolTip");
         Validate.notNull(lore, "You have not passed the lore for the itemTooltip");
         return itemTooltip(makeItemJSON(title, lore));
     }
 
+    /**
+     * Tooltip j chat.
+     *
+     * @param text the text
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat tooltip(final String text) {
 
         return tooltip(text.split("\\n"));
     }
 
+    /**
+     * Tooltip j chat.
+     *
+     * @param lines the lines
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat tooltip(final List<String> lines) {
 
         return tooltip((String[]) lines.toArray());
     }
 
+    /**
+     * Tooltip j chat.
+     *
+     * @param lines the lines
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat tooltip(final String... lines) {
 
         if (lines.length == 1) {
@@ -175,6 +307,12 @@ public class JChat {
         return this;
     }
 
+    /**
+     * Then j chat.
+     *
+     * @param obj the obj
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat then(final Object obj) {
 
         if (!latest().hasText()) {
@@ -185,6 +323,11 @@ public class JChat {
         return this;
     }
 
+    /**
+     * Then j chat.
+     *
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
     public JChat then() {
 
         if (!latest().hasText()) {
@@ -195,6 +338,11 @@ public class JChat {
         return this;
     }
 
+    /**
+     * To jSON string.
+     *
+     * @return the string
+     */
     public String toJSONString() {
 
         if (!_dirty && _jsonString != null) {
@@ -221,6 +369,12 @@ public class JChat {
         return _jsonString;
     }
 
+    /**
+     * Send boolean.
+     *
+     * @param player the player
+     * @return the boolean
+     */
     public boolean send(String player) {
 
         String cmd = "tellraw ";
@@ -235,6 +389,12 @@ public class JChat {
         }
     }
 
+    /**
+     * Send boolean.
+     *
+     * @param player the player
+     * @return the boolean
+     */
     public boolean send(Player player) {
         Validate.notNull(player, "To send a JChat message you must pass a valid Player object");
         return send(player.getName());
@@ -261,6 +421,11 @@ public class JChat {
         return dirty;
     }
 
+    /**
+     * To old message format.
+     *
+     * @return the string
+     */
     public String toOldMessageFormat() {
 
         StringBuilder result = new StringBuilder();
