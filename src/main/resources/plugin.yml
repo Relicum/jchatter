@@ -1,0 +1,5 @@
+name: JChattter
+main: org.codemine.jchatter.JChatter
+author: Relicum
+version: ${project.version}
+description: Simple JSON message sending using Tellraw
