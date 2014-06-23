@@ -26,15 +26,7 @@
 
 package org.codemine.jchatter;
 
-import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Arrays;
-
-import static org.bukkit.ChatColor.*;
 
 /**
  * The Main JavaPlugin Class, main purpose is to allow multiple plugins to all use this
@@ -45,12 +37,10 @@ import static org.bukkit.ChatColor.*;
  * @author Relicum
  * @version 0.0.1
  */
-public class JChatter extends JavaPlugin implements Listener {
+public class JChatter extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-        getServer().getPluginManager().registerEvents(this, this);
 
     }
 
@@ -80,32 +70,5 @@ public class JChatter extends JavaPlugin implements Listener {
         return new JChat(firstPartText);
     }
 
-    /**
-     * Only experimental while testing this will be removed as soon as the basic bugs and features
-     * are coded.
-     *
-     * @param e the e
-     */
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
-
-        JChat jChat = new JChat("||");
-        jChat.color(RED)
-          .style(MAGIC)
-          .then("ADMIN")
-          .color(BLUE)
-          .style(ChatColor.UNDERLINE, ChatColor.ITALIC)
-          .link("http://jd.bukkit.org/beta/apidocs/overview-summary.html")
-          .itemTooltip("&6The Display Name", Arrays.asList("&aFirst Lore Line ", "Second", "", "&bthird"))
-          .then("||")
-          .color(RED)
-          .style(MAGIC);
-        //System.out.println(jChat.toJSONString());
-        //System.out.println(jChat.toOldMessageFormat());
-        if (!jChat.send("Relicum")) {
-            getLogger().severe("Unable to send message to player");
-        }
-
-    }
 
 }
