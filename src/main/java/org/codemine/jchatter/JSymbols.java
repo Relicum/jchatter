@@ -45,7 +45,9 @@ public enum JSymbols {
     BLACK_CHESS_QUEEN('\u265C'),
     BLACK_CHESS_ROOK('\u265D'),
     BLACK_CHESS_BISHOP('\u265E'),
-    BLACK_CHESS_KNIGHT('\u265F');
+    BLACK_CHESS_KNIGHT('\u265F'),
+    POINT_BLACK_LEFT('\u261A'),
+    POINT_BLACK_RIGHT('\u261B');
 
 
     private final Character symbol;
