@@ -36,6 +36,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * JChat is a simple fluentAPI for creating Hover and Click Json Strings.
@@ -47,11 +48,27 @@ import java.util.List;
  * <li>NO USE OF CUSTOM PACKETS</li>
  * </ol>
  * </strong>
- * <p>All messages are built using standard Bukkit API code and it uses TellRaw command to send the messages
+ * <p>All messages are built using standard java code and it uses the vanilla minecraft TellRaw command to send the messages
  * from the console. Players require NO extra permissions. Also any Click Event of type run_command use the users
  * standard permissions.
  * <p/>
+ * <p>
+ *     The instance of player is uses the players string name. Unlike when using {@link org.bukkit.block.CommandBlock}
+ *     there is no @a to send to all players. Each message must be send separately.
+ * <tt>
+ *     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + message);
+ * </tt>
+ * </p>
+ * <p>
+ * <tt>
  * This class has been expired and built apon code by @bobacadodl and @spoonyloony. Big thanks for them for releasing there code.
+ * </tt>
+ * </p>
+ * <p>
+ * <tt>
+ * Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
+ * </tt>
+ * </p>
  * As they have done all of JChatter is also allowed to be used in any way you choose.
  * <p>A basic usage example. This will demonstrates a lot of the features and the final line will send the JSON message to the
  * user with the name Relicum.
@@ -80,7 +97,9 @@ import java.util.List;
  * <p>This will output the following string which is the full JSON formatted message. As you can see the API makes it
  * much easier to build and no need to know any JSON at all. This string can be saved to disk or to a Field this is a good idea
  * if you will be using the message a lot as it doesn't require the string to be rebuilt each time.For more info on sending
- * pre made messages see {@link JChatSender}
+ * pre made messages see {@link JChatSender} this is a simple example class, with synchronized static methods.
+ * For most that class will most likely fulfil all your requirements. But once you have the JSON string you can impliment the sending
+ * any way you like.
  * <br></br>
  * <pre>
  *  {"text":"","extra":[{"text":"[","color":"red","bold":true},{"text":"ADMIN","color":"blue","underlined":true,"italic":true,
@@ -126,7 +145,7 @@ public class JChat {
     }
 
     /**
-     * Text that forms part of the message. Each message part can only contain 1 piece of text.
+     * Text that forms part of the message. Each message part can <strong>ONLY</strong> contain 1 piece of text.
      * <p>Message parts are separate by using the {@link JChat#then()} or {@link JChat#then(Object)}
      *
      * @param text the text that will form this part of the message
@@ -228,7 +247,6 @@ public class JChat {
      * <p>The command will only run if the player has permission to run that command.
      * The command can have any number of arguments. Basically if your command accepts it you can use it here.
      *
-     *
      * @param command the command that the player will be run when this message part is clicked.
      *                Need to input the command exactly as if the player was typing it eg "/home" or "/home raid"
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
@@ -240,10 +258,14 @@ public class JChat {
     }
 
     /**
-     * Achievement tooltip.
+     * Achievement tooltip, see Wiki for String ID's
+     * <pre>
+     * http://minecraft.gamepedia.com/Achievements#List_of_achievements
+     * </pre>
      *
-     * @param name the name
+     * @param name the achievement ID (starting with "achievement") eg "achievement.theEnd2"
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     *
      */
     public JChat achievementTooltip(final String name) {
 
@@ -257,18 +279,18 @@ public class JChat {
      * @param itemJSON the item jSON
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
-    public JChat itemTooltip(final String itemJSON) {
+    protected JChat itemTooltip(final String itemJSON) {
         onHover("show_item", itemJSON);
         return this;
     }
 
     /**
-     * Item tooltip. This displays an tool tip like an items Lore to the player when hovering over the text.
+     * Item tooltip. This displays a tooltip like an items Display name and Lore to the player when hovering over the text.
      * <p>To use Color or styles use the & character followed by any Minecraft formatting code.
      * To display a blank line in the lore just set the required line to "".
      *
      * @param title the title is the Item Display Title
-     * @param lore  the lore formatted as an {@link java.util.List<java.lang.String>} as you normally would using ItemMeta
+     * @param lore  the lore formatted as an List<String> as you normally would using ItemMeta
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat itemTooltip(final String title, final List<String> lore) {
@@ -278,9 +300,12 @@ public class JChat {
     }
 
     /**
-     * Tooltip j chat.
+     * Tooltip displayed with the onHover event.
+     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&'
+     * <p>To add multiple lines use '\n' or better still use a List<String> and set the element to " "
+     * <p>Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
      *
-     * @param text the text
+     * @param text the text that will appear when the onHover event is fired.
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat tooltip(final String text) {
@@ -289,7 +314,10 @@ public class JChat {
     }
 
     /**
-     * Tooltip j chat.
+     * Tooltip displayed with the onHover event.
+     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&'
+     * <p>To add multiple lines set the element to " ". This will produce a new line for you
+     * <p>Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
      *
      * @param lines the lines
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
@@ -300,25 +328,29 @@ public class JChat {
     }
 
     /**
-     * Tooltip j chat.
+     * Tooltip displayed with the onHover event.
+     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&'
+     * <p>To add multiple lines set the relevant array element to " ". This will produce a new line for you.
+     * <p>Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
      *
-     * @param lines the lines
+     * @param lines the {@link java.lang.String[]} of text that will appear when the onHover event is fired.
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat tooltip(final String... lines) {
-
+        Validate.notNull(lines, "Error tooltip does not contain any lines");
         if (lines.length == 1) {
-            onHover("show_text", lines[0]);
+            onHover("show_text", ChatColor.translateAlternateColorCodes('&', lines[0]));
         } else {
-            itemTooltip(makeMultilineTooltip(lines));
+            itemTooltip(makeItemJSON(lines[0], Arrays.asList(lines).subList(1, lines.length)));
         }
         return this;
     }
 
     /**
-     * Then j chat.
+     * Then add the next JChatPart.
+     * Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
      *
-     * @param obj the obj
+     * @param obj the obj to start the message off
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat then(final Object obj) {
@@ -332,7 +364,7 @@ public class JChat {
     }
 
     /**
-     * Then j chat.
+     * Then add the next JChatPart.
      *
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
@@ -347,9 +379,26 @@ public class JChat {
     }
 
     /**
-     * To jSON string.
+     * Converts the message into a jSON string.
+     * There is no need to call this method if you are building the message on the fly to send now just call:
+     * <strong>
+     * <ol>
+     * <li>
+     * {@link JChat#send(org.bukkit.entity.Player)}
+     * </li>
+     * <li>
+     * {@link JChat#send(String)}
+     * </li>
+     * <li>
+     * {@link JChat#send()}
+     * </li>
+     * </ol>
+     * </strong>
+     * <p/>
+     * There is a simple example class {@link org.codemine.jchatter.JChatSender} that you can use to send the message to player/players in the future.
      *
-     * @return the string
+     * @return the JSON string representing the complete message. You can save this string direct to any file
+     * which can then be used at a later date to send to players using the console and the Tellraw command. Or {@link org.codemine.jchatter.JChatSender}
      * @throws java.lang.RuntimeException "invalid message" if the message is not valid
      */
     public String toJSONString() {
@@ -401,16 +450,39 @@ public class JChat {
     }
 
     /**
+     * <p>Send the current JChat message to the specified player UUID.
+     * The player must be online to send the message
+     * </p>
+     *
+     * @param player the players full UUID
+     * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
+     * @throws org.bukkit.command.CommandException
+     */
+    public boolean send(UUID player) {
+
+        if (isOnline(player))
+            return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + toJSONString());
+        else
+            try {
+                throw new Exception(player + "Is not currently online");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return false;
+    }
+
+    /**
      * <p>Send the current JChat message to the specified {@link org.bukkit.entity.Player}.
      * The player must be online to send the message
      * </p>
      *
      * @param player the player the message is sent to
      * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
+     * @throws java.lang.Exception if the player is not found on line.
      */
-    public boolean send(Player player) {
+    public boolean send(Player player) throws Exception {
         Validate.notNull(player, "To send a JChat message you must pass a valid Player object");
-        if (isOnline(player))
+        if (player.isOnline())
             return send(player.getName());
         else
             try {
@@ -443,15 +515,27 @@ public class JChat {
         return dirty;
     }
 
+    /**
+     * Checks if the player is currently online Object can either be the players name or their {@link java.util.UUID}
+     *
+     * @param player to check online status
+     * @return true if the argument was valid and the player is online false if not.
+     */
     private boolean isOnline(Object player) {
-        Player p;
-        if (!(player instanceof Player)) {
-            p = Bukkit.getPlayer((String) player);
-        } else {
-            p = (Player) player;
+
+        if ((player instanceof String)) {
+
+            if (((String) player).length() < 16)
+
+                return Bukkit.getPlayer((String) player).isOnline();
         }
 
-        return p.isOnline();
+        if (player instanceof UUID) {
+
+            return Bukkit.getPlayer((UUID) player).isOnline();
+        }
+
+        return false;
     }
 
     /**
@@ -488,13 +572,21 @@ public class JChat {
         return _jChatParts.get(_jChatParts.size() - 1);
     }
 
+
+    /**
+     * Creates not a JSON string as the name would suggest but a string formatted like item NBT data
+     *
+     * @param title is the Item Display Title
+     * @param lore  of Type List<String> an as you normally would using ItemMeta.
+     * @return string representing either the itemTooltip or a multi line tooltip.
+     */
     private String makeItemJSON(final String title, final List<String> lore) {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < lore.size(); i++) {
             sb.append(i)
-              .append(':')
-              .append("\"");
+                    .append(':')
+                    .append("\"");
             if (lore.get(i).isEmpty())
                 sb.append(" ");
             else
@@ -502,14 +594,15 @@ public class JChat {
             sb.append("\",");
         }
         return String.format("{id:1s,Count:1b,tag:" +
-                               "{display:" +
-                               "{Lore:" +
-                               "[%s]" +
-                               ",Name:\"%s\",}" +
-                               ",}" +
-                               ",Damage:0s,}", sb.toString(), ChatColor.translateAlternateColorCodes('&', title));
+                "{display:" +
+                "{Lore:" +
+                "[%s]" +
+                ",Name:\"%s\",}" +
+                ",}" +
+                ",Damage:0s,}", sb.toString(), ChatColor.translateAlternateColorCodes('&', title));
     }
 
+    @Deprecated
     private String makeMultilineTooltip(final String[] lines) {
 
         StringWriter string = new StringWriter();
@@ -547,12 +640,15 @@ public class JChat {
         _dirty = true;
     }
 
+    /**
+     * Creates the individual message part
+     */
     private final class JChatPart {
 
         ChatColor color = ChatColor.WHITE;
         ArrayList<ChatColor> styles = new ArrayList<ChatColor>();
         String clickActionName = null, clickActionData = null,
-          hoverActionName = null, hoverActionData = null;
+                hoverActionName = null, hoverActionData = null;
         String text = null;
 
         JChatPart(final String text) {
@@ -591,17 +687,17 @@ public class JChat {
                 }
                 if (clickActionName != null && clickActionData != null) {
                     json.name("clickEvent")
-                      .beginObject()
-                      .name("action").value(clickActionName)
-                      .name("value").value(clickActionData)
-                      .endObject();
+                            .beginObject()
+                            .name("action").value(clickActionName)
+                            .name("value").value(clickActionData)
+                            .endObject();
                 }
                 if (hoverActionName != null && hoverActionData != null) {
                     json.name("hoverEvent")
-                      .beginObject()
-                      .name("action").value(hoverActionName)
-                      .name("value").value(hoverActionData)
-                      .endObject();
+                            .beginObject()
+                            .name("action").value(hoverActionName)
+                            .name("value").value(hoverActionData)
+                            .endObject();
                 }
                 return json.endObject();
             } catch (Exception e) {

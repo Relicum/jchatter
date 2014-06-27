@@ -105,7 +105,8 @@ public class JChatSender {
      * @param message the pre made JSON message in {@link java.lang.String} format
      */
     public static synchronized void sendToPlayer(Player player, String message) {
-
+        Validate.notNull(player, "You must pass a valid player name to send the message to");
+        Validate.notNull(message, "You must pass a JSON formatted message to send to the user");
         sendToPlayer(player.getName(), message);
     }
 

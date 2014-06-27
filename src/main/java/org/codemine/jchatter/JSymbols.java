@@ -26,49 +26,48 @@
 
 package org.codemine.jchatter;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
 /**
- * The Main JavaPlugin Class, main purpose is to allow multiple plugins to all use this
- * from a single instance, without having to shard it and risk naming conflicts.
- * <p>This class will just provide static methods to create new JChat objects. Just
- * Have add a dependency to your plugins plugin.yml file
+ * Name: JSymbols.java Created: 27 June 2014
  *
  * @author Relicum
  * @version 0.0.1
  */
-public class JChatter extends JavaPlugin {
+public enum JSymbols {
 
-    @Override
-    public void onEnable() {
-        System.out.println(JSymbols.BLACK_CHESS_BISHOP + " hello");
+    BLACK_CHESS_PAWN('\u2654'),
+    WHITE_CHESS_KING('\u2655'),
+    WHITE_CHESS_QUEEN('\u2656'),
+    WHITE_CHESS_ROOK('\u2657'),
+    WHITE_CHESS_BISHOP('\u2658'),
+    WHITE_CHESS_KNIGHT('\u2659'),
+    WHITE_CHESS_PAWN('\u265A'),
+    BLACK_CHESS_KING('\u265B'),
+    BLACK_CHESS_QUEEN('\u265C'),
+    BLACK_CHESS_ROOK('\u265D'),
+    BLACK_CHESS_BISHOP('\u265E'),
+    BLACK_CHESS_KNIGHT('\u265F');
+
+
+    private final Character symbol;
+    private final char toString;
+
+    private JSymbols(Character p) {
+
+        this.symbol = p;
+        this.toString = p;
+    }
+
+    public String getSymbol() {
+
+        return String.valueOf(this.symbol);
     }
 
     @Override
-    public void onDisable() {
-
-    }
-
-    /**
-     * Instantiates a new JChat Object
-     *
-     * @return a new instance of {@link org.codemine.jchatter.JChat}, all the doc's can be found there
-     */
-    public static JChat getJChat() {
-        return new JChat();
-    }
-
-    /**
-     * Instantiates a new JChat Object
-     * <p>Messages are built in "parts" where all part share the same formatting and style.
-     *
-     * @param firstPartText the text can be the first part of a message.
-     *                      Bare in mind all text added here will share the same formatting.
-     * @return a new instance of {@link org.codemine.jchatter.JChat}, all the doc's can be found there
-     */
-    public static JChat getJChat(String firstPartText) {
-        return new JChat(firstPartText);
+    public String toString() {
+        return String.valueOf(toString);
     }
 
 
 }
+
+
