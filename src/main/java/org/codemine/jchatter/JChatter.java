@@ -41,7 +41,6 @@ public class JChatter extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println(JSymbols.BLACK_CHESS_BISHOP + " hello");
     }
 
     @Override

@@ -47,7 +47,33 @@ public enum JSymbols {
     BLACK_CHESS_BISHOP('\u265E'),
     BLACK_CHESS_KNIGHT('\u265F'),
     POINT_BLACK_LEFT('\u261A'),
-    POINT_BLACK_RIGHT('\u261B');
+    POINT_BLACK_RIGHT('\u261B'),
+    EYES_AND_HEAD('\u268E'),
+    CHECK_MARK('\u2713'),
+    HEAVY_CHECK_MARK('\u2714'),
+    BALLOT_X('\u2717'),
+    HEAVY_BALLOT_X('\u2718'),
+    HEAVY_BLACK_HEART('\u2764'),
+    DIGIT_ONE('\u2776'),
+    DIGIT_TWO('\u2777'),
+    DIGIT_THREE('\u2778'),
+    DIGIT_FOUR('\u2779'),
+    DIGIT_FIVE('\u277A'),
+    DIGIT_SIX('\u277B'),
+    DIGIT_SEVEN('\u277C'),
+    DIGIT_EIGHT('\u277D'),
+    DIGIT_NINE('\u227E'),
+    LIGHT_VERTICAL_BAR('\u2758'),
+    MEDIUM_VERTICAL_BAR('\u2759'),
+    HEAVY_VERTICAL_BAR('\u275A'),
+    AIRPLANE('\u2708'),
+    ENVELOPE('\u2709'),
+    WHITE_STAR('\u2729'),
+    CIRCLED_WHITE_STAR('\u272A');
+
+
+
+
 
 
     private final Character symbol;
