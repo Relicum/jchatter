@@ -24,51 +24,15 @@
  * THE SOFTWARE.
  */
 
-package org.codemine.jchatter;
-
-import org.bukkit.plugin.java.JavaPlugin;
+package org.codemine.jchatter.Interfaces;
 
 /**
- * The Main JavaPlugin Class, main purpose is to allow multiple plugins to all use this
- * from a single instance, without having to shard it and risk naming conflicts.
- * <p>This class will just provide static methods to create new JChat objects. Just
- * Have add a dependency to your plugins plugin.yml file
+ * Name: IChatSender.java Created: 04 July 2014
  *
  * @author Relicum
  * @version 0.0.1
  */
-public class JChatter extends JavaPlugin {
-
-    @Override
-    public void onEnable() {
-
-    }
-
-    @Override
-    public void onDisable() {
-
-    }
-
-    /**
-     * Instantiates a new JChat Object
-     *
-     * @return a new instance of {@link org.codemine.jchatter.JChat}, all the doc's can be found there
-     */
-    public static JChat getJChat() {
-        return new JChat();
-    }
-
-    /**
-     * Instantiates a new JChat Object
-     * <p>Messages are built in "parts" where all part share the same formatting and style.
-     *
-     * @param firstPartText the text can be the first part of a message.
-     *                      Bare in mind all text added here will share the same formatting.
-     * @return a new instance of {@link org.codemine.jchatter.JChat}, all the doc's can be found there
-     */
-    public static JChat getJChat(String firstPartText) {
-        return new JChat(firstPartText);
-    }
+public interface IChatSender {
 
 
 }

@@ -525,7 +525,7 @@ public class JChat {
 
         if ((player instanceof String)) {
 
-            if (((String) player).length() < 16)
+            if (((String) player).length() < 17)
 
                 return Bukkit.getPlayer((String) player).isOnline();
         }
