@@ -28,6 +28,8 @@ package org.codemine.jchatter.Interfaces;
 
 /**
  * Name: IChatSender.java Created: 04 July 2014
+ * More details to follow. This will be a simple Interface to allow you to create your own message senders, that
+ * Integrate directly with JChat itself.
  *
  * @author Relicum
  * @version 0.0.1

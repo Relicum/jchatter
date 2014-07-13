@@ -3,7 +3,9 @@
  *
  * Copyright (c) 2014 Relicum
  *
- * The following authors supplied code that this Lib is based on @Spoonyloony @bobacadodl @dorkrepublic
+ * The following authors supplied some of the code that this Lib is based on @Spoonyloony @bobacadodl @dorkrepublic
+ * As per their License I have licensed this under the same license and freedoms that I was granted. Please included
+ * ALL past and present contributors if you wish to use this plugin.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,13 +35,12 @@ import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonWriter;
 import org.bukkit.entity.Player;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * JChat is a simple fluentAPI for creating Hover and Click Json Strings.
+ * JChat is a simple fluentAPI for creating Hover and Click Json chat messages.
  * <p>It also has built in facilities to send the message to a player or all players or a
  * collection of players. What makes this different from other implementations is that it uses,
  * <strong><ol>
@@ -53,15 +54,16 @@ import java.util.UUID;
  * standard permissions.
  * <p/>
  * <p>
- *     The instance of player is uses the players string name. Unlike when using {@link org.bukkit.block.CommandBlock}
- *     there is no @a to send to all players. Each message must be send separately.
+ * The instance of player below is using the players string name, you can also use a player UUID or the player object itself. Unlike when using {@link org.bukkit.block.CommandBlock}
+ * there is no @a to send to all players. Each message must be sent separately.
  * <tt>
- *     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + message);
+ * Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + message);
  * </tt>
  * </p>
  * <p>
  * <tt>
- * This class has been expired and built apon code by @bobacadodl and @spoonyloony. Big thanks for them for releasing there code.
+ * This class has been inspired and built using some ideas and code by @bobacadodl and @spoonyloony. Big thanks for them for releasing their code.
+ * Without them I wouldn't of had the inspiration to make this plugin.
  * </tt>
  * </p>
  * <p>
@@ -86,13 +88,13 @@ import java.util.UUID;
  *     .color(RED)
  *     .style(BOLD)
  *     .send("Relicum");
- *     }*
+ *     }
  * </pre>
  * <p>To get the JSON string itself, which you can save to disk or store in a Field replace the .send() line with
  * <pre>
  *     {@code
  *     .toJSONString();
- *     }*
+ *     }
  * </pre>
  * <p>This will output the following string which is the full JSON formatted message. As you can see the API makes it
  * much easier to build and no need to know any JSON at all. This string can be saved to disk or to a Field this is a good idea
@@ -117,6 +119,7 @@ public class JChat {
     private String _jsonString;
     private boolean _dirty;
     private boolean _save = true;
+    private Pattern _pattern = Pattern.compile("%s");
 
     /**
      * Instantiates a new JChat Object
@@ -265,7 +268,6 @@ public class JChat {
      *
      * @param name the achievement ID (starting with "achievement") eg "achievement.theEnd2"
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
-     *
      */
     public JChat achievementTooltip(final String name) {
 
@@ -297,6 +299,81 @@ public class JChat {
         Validate.notNull(title, "You have not passed a display title for the itemToolTip");
         Validate.notNull(lore, "You have not passed the lore for the itemTooltip");
         return itemTooltip(makeItemJSON(title, lore));
+    }
+
+
+    /**
+     * tooltipsWithValues extended method to create a tooltip which allows color codes and substitute values to be passed.
+     * <p>Color codes or styles many be passed in here using the '&' followed by a valid format code. They can be added in any order you like.
+     * <p>The message can contain as many place holders as you like place holders in the messages must be '%s' and you must
+     * are required to have the same number of values to match the number of placeholders. Failure to do so will and it will
+     * throw an MissingFormatArgumentException
+     * <p/>
+     * <p>Values should be passed as the 2nd argument as a list of strings. The order you add them will be the order they are used to replace
+     * placeholders.
+     * <p/>
+     * <p>Like standard tooltips the onHover event will be applied to the text part that immediately proceeds it. While this function allow you
+     * to input an entire line of text and styles all at once, it is still splitting them up to message parts, this is not a design fault, it is
+     * the way the JSON message format requires.
+     * <p>If you do not need to use placeholders then do not use this method use the standard tooltips. Failure to do this will
+     * cause MissingFormatArgumentException to be thrown as the method is expecting it. See below for an example usage of this method.
+     * <p>
+     * <strong>player</strong> is an instance of {@link org.bukkit.entity.Player}. You are not required to use a player object to send the message,
+     * you can use the players name, the players UUID or if left blank it will send to all players. Please note you will need to roughly follow the
+     * example below, especially on the instance creation do not pass in any arguments. As mentioned above the following onHover event is applied to
+     * the last text part. In this case the "server" word. if you wish to have the effect applied to a different part of the message you will need to
+     * split up the .tooltipsWithValues the second example demonstrates this. This will add the effect to the first .then chat part.
+     * <p>
+     * <pre>
+     * {@code
+     *     JChat jChat = new JChat();
+     *     jChat.then("&a&oHi %s hope you like the &6&o%s &a&oserver", player.getName(), "Factions")
+     *     .tooltipsWithValues("&aHi %s hope you like &b%s server", player.getName(), "Factions"))
+     *     .send(player);
+     *     }
+     * </pre>
+     * </p>
+     * <p>
+     * <pre>
+     * {@code
+     *     JChat jChat = new JChat();
+     *     jChat.then("&a&oHi %s hope you like the ", player.getName())
+     *     .tooltipsWithValues("&aHi %s hope you like &b%s server", player.getName(), "Factions"))
+     *     .then("&6&o%s &a&oserver","Factions")
+     *     .send(player);
+     *     }
+     * </pre>
+     * </p>
+     * <p>
+     * <tt>NOTE CURRENTLY ONLY SINGLE LINE TOOLTIPSWITHVALUES IN THIS FORMAT ARE SUPPORTED AT THIS TIME, MULTI LINE WILL BE ADDED SOON</tt>
+     * </p>
+     * <p/>
+     * <p>Currently it has a limitation of only being able to pass 2 ChatColor objects in a row. They can be one color and style OR 2 styles OR just one of either.
+     * this would be valid in the message part. "&a&oHello" This would display green and italic text. This is what I mean when you can only pass to ChatColor objects
+     * in a row. This is invalid <strong>"&a&o&lHello"</strong> The total message can have as many Chatcolors as you like provided they are not added more than 2 in a row.
+     * I will soon be changing this to remove this limitation but it was hard enough with just the 2 options, allowing the developer complete freedom to the order they are
+     * added. These to are equal <strong>"&a&oHello"</strong> OR <strong>"&o&aHello"</strong> both result in identical formatting without the developer indicating in any way
+     * what order they are adding them.
+     * </p>
+     *
+     * @param text the text that will be used for the tooltip message. Placeholders MUST be <strong>%s</strong>
+     * @param subs the subs the values that are used to replace placeholders in the message. You must pass the exact number of values as you have placeholders.
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     * @throws MissingFormatArgumentException the missing format argument exception
+     */
+    public JChat tooltipsWithValues(String text, String... subs) throws MissingFormatArgumentException {
+        Validate.notNull(text, "The message can not be null");
+        Matcher matcher = _pattern.matcher(text);
+        int count = 0;
+        while (matcher.find())
+            count++;
+
+        if (count == 0 || count != subs.length)
+            throw new MissingFormatArgumentException("Error: The number of values do not match the number of placeholders");
+
+        onHover("show_text", ChatColor.translateAlternateColorCodes('&', String.format(text, subs)));
+        return this;
+
     }
 
     /**
@@ -345,6 +422,200 @@ public class JChat {
         }
         return this;
     }
+
+    /**
+     * Tooltip displayed with the onHover event, allowing color and style codes and placeholders to be used.
+     * <p>For full usage instructions see {@link org.codemine.jchatter.JChat#tooltipsWithValues(String, String...)} as the functionality
+     * is almost identical. Except this is for adding the message text body not a tooltip !
+     *
+     * @param message the text that will be used for the tooltip message. Placeholders MUST be <strong>%s</strong>
+     * @param subs    the subs the values that are used to replace placeholders in the message. You must pass the exact number of values as you have placeholders.
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     * @throws IllegalArgumentException the illegal argument exception
+     */
+    public JChat then(String message, String... subs) throws IllegalArgumentException {
+        Validate.notNull(message, "The message can not be null");
+        Matcher matcher = _pattern.matcher(message);
+        int count = 0;
+        while (matcher.find())
+            count++;
+
+        if (count == 0 || count != subs.length)
+            throw new MissingFormatArgumentException("Error: The number of values do not match the number of placeholders");
+
+        message = String.format(message, subs);
+        //  System.out.println("Message length is currently " + message.length());
+        //  System.out.println(message);
+        splitPartsOnColor(message);
+
+
+        return this;
+    }
+
+    /**
+     * splitPartsOnColor is used to sort and format the input from {@link org.codemine.jchatter.JChat#then(String, String...)}.
+     * This is for internal use only.
+     *
+     * @param message the message that is to be sorted and formatted.
+     * @throws IllegalArgumentException
+     */
+    private void splitPartsOnColor(String message) throws IllegalArgumentException {
+
+        char[] b = message.toCharArray();
+        List<Character> finds = new ArrayList<>();
+        List<Integer> codePoints = new ArrayList<>();
+
+        for (int i = 0; i < b.length - 1; i++) {
+            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+
+                finds.add(b[i + 1]);
+                codePoints.add(i + 1);
+            }
+        }
+
+        int max = codePoints.size();
+        // System.out.println("The length of points is " + max);
+        //If no code points found means no color codes to parse so just set the message and return
+        if (max == 0) {
+            text(message);
+            finds.clear();
+            codePoints.clear();
+            return;
+        } else {
+            int point = 0;
+            boolean lastDouble = false;
+            for (int i = 0; i <= max - 1; i++) {
+                System.out.println("i is now " + i);
+                if (lastDouble) {
+                    //     System.out.println("i is being incremented");
+                    i++;
+
+                }
+                point = codePoints.get(i);
+                //  System.out.println("i =" + i + "codepoint = " + point);
+
+                //Must be a single and the last color or style option in the message
+                if (i == max - 1) {
+                    //   System.out.println("Are we getting to last single");
+
+                    text(message.substring(point + 1));
+
+                    //Test if the character is valid
+                    if (isColor(String.valueOf(finds.get(i)))) {
+                        color(ChatColor.getByChar(finds.get(i)));
+                    } else {
+                        style(ChatColor.getByChar(finds.get(i)));
+                    }
+
+                    // System.out.println("Quiting from last single");
+                    finds.clear();
+                    codePoints.clear();
+                    return;
+                }
+
+                //Must have a chat color following a chat style
+                if (point + 2 == (codePoints.get(i + 1))) {
+                    //   System.out.println("Must be reaching here and i is" + i);
+                    if (i + 1 >= max - 1) {
+                        //   System.out.println("About to run the double args if it is the last parts");
+
+                        text(message.substring(point + 3));
+
+                    } else {
+                        //    System.out.println("About to run the double args");
+
+                        text(message.substring(point + 3, codePoints.get(i + 2) - 1));
+
+                    }
+
+                    boolean i1 = isColor(String.valueOf(finds.get(i)));
+                    boolean i2 = isColor(String.valueOf(finds.get(i + 1)));
+                    //Check if both are chat styles
+                    if (!i1 && !i2) {
+                        style(ChatColor.getByChar(finds.get(i)), ChatColor.getByChar(finds.get(i + 1)));
+                    }
+                    //check first arg
+                    if (i1) {
+                        color(ChatColor.getByChar(finds.get(i)));
+                    } else {
+                        style(ChatColor.getByChar(finds.get(i)));
+                    }
+                    //check 2nd arg
+                    if (i2) {
+                        color(ChatColor.getByChar(finds.get(i + 1)));
+                    } else {
+                        style(ChatColor.getByChar(finds.get(i + 1)));
+                    }
+                    if (i + 1 >= max - 1) {
+                        //    System.out.println("Quiting as this double was the last part");
+                        finds.clear();
+                        codePoints.clear();
+                        return;
+                    }
+
+                    if (i + 1 >= max)
+                        lastDouble = false;
+                    else
+                        lastDouble = true;
+
+                    //Only add a new textPart if i + 1 does not make i >= max length -1
+                    if (!(i + 1 >= max - 1)) {
+                        then();
+                    }
+                    //   System.out.println("Must be a double");
+                }
+                //Must be a single chat color or style
+                else {
+
+                    text(message.substring(point + 1, codePoints.get(i + 1) - 1));
+
+                    //Test if the character is valid
+                    if (isColor(String.valueOf(finds.get(i)))) {
+                        color(ChatColor.getByChar(finds.get(i)));
+                    } else {
+                        style(ChatColor.getByChar(finds.get(i)));
+                    }
+
+
+                    lastDouble = false;
+                    if (!(i >= max - 1)) {
+                        then();
+                    }
+                    //   System.out.println("Must be a single");
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Tests to see if the character is a valid color or style format
+     *
+     * @param c the string character to test
+     * @return boolean true and a valid color was found false and a valid style was found
+     * @throws java.lang.IllegalArgumentException if the character is neither a valid color od style
+     */
+    private boolean isColor(String c) throws IllegalArgumentException {
+        String styles = "KkLlMmNnOoRr";
+        String colors = "0123456789AaBbCcDdEeFf";
+        if (colors.contains(c))
+            return true;
+        if (styles.contains(c))
+            return false;
+        throw new IllegalArgumentException("The character is not a color or a style character");
+    }
+
+/*    private int parseMessage(String mess, int startIndex) {
+        Validate.notNull(mess, "Message can not be null");
+        char[] b = mess.substring(startIndex).toCharArray();
+        System.out.println("Char array is currently " + b.length);
+        for (int i = startIndex; i < b.length - 1; i++) {
+            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+                return i + 1;
+            }
+        }
+        return '0';
+    }*/
 
     /**
      * Then add the next JChatPart.
@@ -603,9 +874,14 @@ public class JChat {
     }
 
     @Deprecated
-    private String makeMultilineTooltip(final String[] lines) {
-
-        StringWriter string = new StringWriter();
+    /**
+     * @deprecated due incompatibility with other methods
+     * @see {@link org.codemine.jchatter.JChat#makeItemJSON(String, java.util.List)} for alternative method
+     * @throws java.lang.Exception to pre warn that the method is not available.
+     */
+    private String makeMultilineTooltip(final String[] lines) throws Exception {
+        throw new Exception("This method is no long accessible please use makeItemJSON instead");
+        /*StringWriter string = new StringWriter();
         JsonWriter json = new JsonWriter(string);
         try {
             json.beginObject().name("id").value(1);
@@ -621,7 +897,7 @@ public class JChat {
         } catch (Exception e) {
             throw new RuntimeException("invalid tooltip");
         }
-        return string.toString();
+        return string.toString();*/
     }
 
     private void onClick(final String name, final String data) {

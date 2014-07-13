@@ -3,11 +3,21 @@ JChatter - For sending JSON Chat messages
 
 '''WORK IN PROGRESS'''
 
-JChatter is a custom implementation of various other Libs by @dorkrepublic @Spoonyloony @bobacadodl 
+``JChatter is a custom implementation of various other Libs by @dorkrepublic @Spoonyloony @bobacadodl, many thanks for doing some of the ground work.`` 
+
+
+`Recently added the ability to passing in color codes and styles directly to messages and tooltips as well as using unlimited placeholders. The plugin
+will take care of the rest allowing for very rapid development.`
+
 
 <blockquote>
-The difference being this version does not use any reflection/NMS code to create OR send the messages.
+The difference being this version does not use any reflection/NMS code or Packet manipulation to create OR send the messages.
 </blockquote>
+
+
+Also included is the ability to add unicode symbols, using a enum call JSymbols, this works in the same way as the ChatColor class. Currently this is
+still a WIP and is liable to change very shortly so please don't rely on it for production code, the documentation will display what each of the current symbols looks
+like provided you have an up to date browser.
 
 This plugin uses a fluentAPI to chain the creation of messages quickly. The messages are then sent using the Console and the TellRaw command.
 
@@ -22,7 +32,7 @@ Maven Dependency
     <dependency>
         <groupId>org.codemine</groupId>
         <artifactId>jchat</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </dependency>
 ```
 
@@ -44,6 +54,6 @@ Jenkins
 ---
 [JENKINS CI](https://relicum.ci.cloudbees.com/job/JChatter/)
 
-**Pull requests gladly accepted**
+**Pull requests gladly accepted, as well as feature requests, though a can't promise to impliment all requests**
 
   

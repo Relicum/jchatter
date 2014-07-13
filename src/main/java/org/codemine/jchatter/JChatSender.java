@@ -28,7 +28,10 @@ package org.codemine.jchatter;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandException;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 /**
  * JChat message sender, Example class to send pre made JSON messages using the console
@@ -59,18 +62,17 @@ public class JChatSender {
      * Send a JChat Message to the stored player
      * <P>This uses the console and the tellraw command to send the message.
      * The player will still require the correct permissions to run any click events
-     * <P>This method is thread safe as it is synchronized
+     * <P>This method is fairly thread safe as it is synchronized
+     *
+     * @throws java.lang.NullPointerException      if a player can't be found.
+     * @throws org.bukkit.command.CommandException if there was a problem dispatching the command
      */
-    public static synchronized void sendToAll(String message) {
+    public static synchronized void sendToAll(String message) throws NullPointerException, CommandException {
         Validate.notNull(message, "You must pass a JSON formatted message to send to the user");
         for (Player player : Bukkit.getOnlinePlayers()) {
-            try {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd + player.getName() + " " + message);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd + player.getName() + " " + message);
+        }
     }
 
     /**
@@ -81,18 +83,34 @@ public class JChatSender {
      *
      * @param player  the players string name to send the message to
      * @param message the pre made message in JSON format
+     * @throws java.lang.NullPointerException      if the player is not found.
+     * @throws org.bukkit.command.CommandException if there was a problem dispatching the command
      */
-    public static synchronized void sendToPlayer(String player, String message) {
+    public static synchronized void sendToPlayer(String player, String message) throws NullPointerException, CommandException {
 
         Validate.notNull(player, "You must pass a valid player name to send the message to");
         Validate.notNull(message, "You must pass a JSON formatted message to send to the user");
-        try {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd + player + " " + message);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd + player + " " + message);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    }
 
+    /**
+     * Send a JChat Message to a Player using their UUID.
+     * <P>This uses the console and the tellraw command to send the message.
+     * The player will still require the correct permissions to run any click events
+     * <P>This method is fairly thread safe as it is synchronized
+     *
+     * @param player  the players UUID to send the message to
+     * @param message the pre made message in JSON format
+     * @throws java.lang.NullPointerException      if the player is not found
+     * @throws org.bukkit.command.CommandException if there was a problem dispatching the command
+     */
+    public static synchronized void sendToPlayer(UUID player, String message) throws NullPointerException, CommandException {
+
+        Validate.notNull(player, "You must pass a valid player UUID to send the message to");
+        Validate.notNull(message, "You must pass a JSON formatted message to send to the user");
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd + Bukkit.getPlayer(player) + " " + message);
     }
 
     /**
@@ -103,8 +121,10 @@ public class JChatSender {
      *
      * @param player  the {@link org.bukkit.entity.Player} to send the message to
      * @param message the pre made JSON message in {@link java.lang.String} format
+     * @throws java.lang.NullPointerException      if the player is not found.
+     * @throws org.bukkit.command.CommandException if there was a problem dispatching the command
      */
-    public static synchronized void sendToPlayer(Player player, String message) {
+    public static synchronized void sendToPlayer(Player player, String message) throws NullPointerException, CommandException {
         Validate.notNull(player, "You must pass a valid player name to send the message to");
         Validate.notNull(message, "You must pass a JSON formatted message to send to the user");
         sendToPlayer(player.getName(), message);

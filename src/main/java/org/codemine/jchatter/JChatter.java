@@ -26,13 +26,15 @@
 
 package org.codemine.jchatter;
 
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * The Main JavaPlugin Class, main purpose is to allow multiple plugins to all use this
  * from a single instance, without having to shard it and risk naming conflicts.
  * <p>This class will just provide static methods to create new JChat objects. Just
- * Have add a dependency to your plugins plugin.yml file
+ * Have add a dependency to your plugins plugin.yml file and call either of the static methods
+ * below to obtain a new instance of JChat.
  *
  * @author Relicum
  * @version 0.0.1
@@ -42,10 +44,29 @@ public class JChatter extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        getLogger().info("JChatter was written by Relicum but includes work by dorkrepublic Spoonyloony bobacadodl");
+        getLogger().info("More details can be found here https://github.com/Relicum/jchatter");
+
     }
 
     @Override
     public void onDisable() {
+
+    }
+
+    /**
+     * This method is purely for my testing it is not live.
+     */
+    private void join(PlayerJoinEvent e) {
+
+        JChat jChat = new JChat();
+        try {
+            jChat.then("&a&oHi %s hope you like the %s server", e.getPlayer().getName(), "Factions")
+                    .tooltipsWithValues("&aHi %s hope you like &b%s server", e.getPlayer().getName(), "Factions")
+                    .send(e.getPlayer());
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
 
     }
 

@@ -6,7 +6,7 @@
     <artifactId>jchat</artifactId>
     <packaging>jar</packaging>
     <name>JChatter</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <resources>
@@ -19,7 +19,7 @@
                 </includes>
             </resource>
         </resources>
-        <finalName>${project.name}-${project.version}</finalName>
+        <finalName>${project.name}-${project.version}-b{BUILD_ID}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

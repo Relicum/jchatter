@@ -31,14 +31,13 @@ package org.codemine.jchatter;
  * <p>The usage of unicode symbols is a valid format when using the TellRaw command and the JSON
  * chat formatting.The quote below is from http://minecraft.gamepedia.com/Tellraw under the Raw JSON format section.
  * As JChat uses tellraw to send the messages through the console.
- * <p>
+ * <p/>
  * <tt>
- *     <pre>
+ * <pre>
  *     Finally, unlike other commands using JSON, /tellraw Strings support Unicode via the notation
  *     &#92;u####, where #### is the Unicode hexadecimal number for the desired character.
  *     </pre>
- *     </tt>
- *
+ * </tt>
  *
  * @author Relicum
  * @version 0.0.1
@@ -180,16 +179,6 @@ public enum JSymbols {
      * The WHITE_FLORETTE <strong>&#x2740;</strong>
      */
     WHITE_FLORETTE('\u2740');
-
-
-
-
-
-
-
-
-
-
 
 
     private final Character symbol;
