@@ -19,7 +19,7 @@
                 </includes>
             </resource>
         </resources>
-        <finalName>${project.name}-${project.version}-b{BUILD_ID}</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
