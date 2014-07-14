@@ -43,11 +43,18 @@ import java.util.regex.Pattern;
  * JChat is a simple fluentAPI for creating Hover and Click Json chat messages.
  * <p>It also has built in facilities to send the message to a player or all players or a
  * collection of players. What makes this different from other implementations is that it uses,
+ * <p>
+ * <tt>
+ *  This class has been inspired and built using some ideas and code by @bobacadodl and @spoonyloony and @dorkrepublic.
+ *  Big thanks for them for releasing their code. Without them I wouldn't of had the inspiration to customise this plugin.
+ * </tt>
+ * </p>
  * <strong><ol>
  * <li>NO REFLECTION</li>
  * <li>NO NMS CODE</li>
  * <li>NO USE OF CUSTOM PACKETS</li>
  * </ol>
+ * <strong>This also supports unlimited number of events on a single message</strong>
  * </strong>
  * <p>All messages are built using standard java code and it uses the vanilla minecraft TellRaw command to send the messages
  * from the console. Players require NO extra permissions. Also any Click Event of type run_command use the users
@@ -58,12 +65,6 @@ import java.util.regex.Pattern;
  * there is no @a to send to all players. Each message must be sent separately.
  * <tt>
  * Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + message);
- * </tt>
- * </p>
- * <p>
- * <tt>
- * This class has been inspired and built using some ideas and code by @bobacadodl and @spoonyloony. Big thanks for them for releasing their code.
- * Without them I wouldn't of had the inspiration to make this plugin.
  * </tt>
  * </p>
  * <p>
@@ -485,7 +486,7 @@ public class JChat {
             int point = 0;
             boolean lastDouble = false;
             for (int i = 0; i <= max - 1; i++) {
-                System.out.println("i is now " + i);
+                //System.out.println("i is now " + i);
                 if (lastDouble) {
                     //     System.out.println("i is being incremented");
                     i++;
@@ -604,18 +605,6 @@ public class JChat {
             return false;
         throw new IllegalArgumentException("The character is not a color or a style character");
     }
-
-/*    private int parseMessage(String mess, int startIndex) {
-        Validate.notNull(mess, "Message can not be null");
-        char[] b = mess.substring(startIndex).toCharArray();
-        System.out.println("Char array is currently " + b.length);
-        for (int i = startIndex; i < b.length - 1; i++) {
-            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
-                return i + 1;
-            }
-        }
-        return '0';
-    }*/
 
     /**
      * Then add the next JChatPart.
@@ -845,7 +834,8 @@ public class JChat {
 
 
     /**
-     * Creates not a JSON string as the name would suggest but a string formatted like item NBT data
+     * Creates not a JSON string as the name would suggest but a string formatted partly in Json but also item NBT data.
+     * This information ws gain directly off the Minecraft Wiki.
      *
      * @param title is the Item Display Title
      * @param lore  of Type List<String> an as you normally would using ItemMeta.
@@ -881,23 +871,6 @@ public class JChat {
      */
     private String makeMultilineTooltip(final String[] lines) throws Exception {
         throw new Exception("This method is no long accessible please use makeItemJSON instead");
-        /*StringWriter string = new StringWriter();
-        JsonWriter json = new JsonWriter(string);
-        try {
-            json.beginObject().name("id").value(1);
-            json.name("tag").beginObject().name("display").beginObject();
-            json.name("Name").value("\\u00A7f" + lines[0].replace("\"", "\\\""));
-            json.name("Lore").beginArray();
-            for (int i = 1; i < lines.length; i++) {
-                final String line = lines[i];
-                json.value(line.isEmpty() ? " " : line.replace("\"", "\\\""));
-            }
-            json.endArray().endObject().endObject().endObject();
-            json.close();
-        } catch (Exception e) {
-            throw new RuntimeException("invalid tooltip");
-        }
-        return string.toString();*/
     }
 
     private void onClick(final String name, final String data) {
