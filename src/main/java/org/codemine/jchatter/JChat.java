@@ -783,6 +783,11 @@ public class JChat {
      */
     private boolean isOnline(Object player) {
 
+        if (player instanceof UUID) {
+
+            return Bukkit.getPlayer((UUID) player).isOnline();
+        }
+
         if ((player instanceof String)) {
 
             if (((String) player).length() < 17)
@@ -790,10 +795,7 @@ public class JChat {
                 return Bukkit.getPlayer((String) player).isOnline();
         }
 
-        if (player instanceof UUID) {
 
-            return Bukkit.getPlayer((UUID) player).isOnline();
-        }
 
         return false;
     }
