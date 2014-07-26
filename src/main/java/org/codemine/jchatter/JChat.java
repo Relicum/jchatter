@@ -721,7 +721,7 @@ public class JChat {
     public boolean send(UUID player) {
 
         if (isOnline(player))
-            return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.toString() + " " + toJSONString());
+            return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + toJSONString());
         else
             try {
                 throw new Exception(player + "Is not currently online");
