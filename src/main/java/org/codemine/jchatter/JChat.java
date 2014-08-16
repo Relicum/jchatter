@@ -783,7 +783,7 @@ public class JChat {
      */
     private boolean isOnline(Object player) {
 
-        if (player instanceof UUID) {
+        if ((UUID) player instanceof UUID) {
 
             return Bukkit.getPlayer((UUID) player).isOnline();
         }

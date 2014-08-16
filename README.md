@@ -1,7 +1,6 @@
 JChatter - For sending JSON Chat messages
 ============================================
 
-'''WORK IN PROGRESS'''
 
 ``JChatter is a custom implementation of various other Libs by @dorkrepublic @Spoonyloony @bobacadodl, many thanks for doing some of the ground work.`` 
 
@@ -32,7 +31,7 @@ Maven Dependency
     <dependency>
         <groupId>org.codemine</groupId>
         <artifactId>jchat</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </dependency>
 ```
 
@@ -41,8 +40,14 @@ Maven Repo
 
 ```XML
     <repository>
-        <id>snapshot</id>
+        <id>relicum-snapshot</id>
         <url>http://repository-relicum.forge.cloudbees.com/snapshot/</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
     </repository>
 ```
 
