@@ -45,8 +45,8 @@ import java.util.regex.Pattern;
  * collection of players. What makes this different from other implementations is that it uses,
  * <p>
  * <tt>
- *  This class has been inspired and built using some ideas and code by @bobacadodl and @spoonyloony and @dorkrepublic.
- *  Big thanks for them for releasing their code. Without them I wouldn't of had the inspiration to customise this plugin.
+ * This class has been inspired and built using some ideas and code by @bobacadodl and @spoonyloony and @dorkrepublic.
+ * Big thanks for them for releasing their code. Without them I wouldn't of had the inspiration to customise this plugin.
  * </tt>
  * </p>
  * <strong><ol>
@@ -690,22 +690,24 @@ public class JChat {
     /**
      * <p>Send the current JChat message to the specified player name.
      * The player must be online to send the message
-     * </p>
+     * <p>This is marked as depreciated due to Bukkit marking it as that, this is also very
+     * inefficient way to look up players as they are index by UUID now.
      *
      * @param player the players string name the message is sent to
      * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
-     * @throws org.bukkit.command.CommandException
+     * @throws java.lang.RuntimeException
      */
-    public boolean send(String player) {
+    @Deprecated
+    public boolean send(String player) throws RuntimeException {
+        Player p;
+        try {
+            p = Bukkit.getPlayer(player);
+            if (p.isOnline())
+                return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + p.getName() + " " + toJSONString());
+        } catch (Exception e) {
+            throw new RuntimeException(player + "Unable to locate the player with the string name of " + player + " or they are not on line");
+        }
 
-        if (isOnline(player))
-            return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + toJSONString());
-        else
-            try {
-                throw new Exception(player + "Is not currently online");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         return false;
     }
 
@@ -716,18 +718,18 @@ public class JChat {
      *
      * @param player the players full UUID
      * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
-     * @throws org.bukkit.command.CommandException
+     * @throws java.lang.RuntimeException
      */
-    public boolean send(UUID player) {
+    public boolean send(UUID player) throws RuntimeException {
+        Player p;
+        try {
+            p = Bukkit.getPlayer(player);
+            if (p.isOnline())
+                return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + p.getName() + " " + toJSONString());
+        } catch (Exception e) {
+            throw new RuntimeException(player + "Unable to locate the player with the UUID of " + player.toString() + " or they are not on line");
+        }
 
-        if (isOnline(player))
-            return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + toJSONString());
-        else
-            try {
-                throw new Exception(player + "Is not currently online");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         return false;
     }
 
@@ -743,7 +745,7 @@ public class JChat {
     public boolean send(Player player) throws Exception {
         Validate.notNull(player, "To send a JChat message you must pass a valid Player object");
         if (player.isOnline())
-            return send(player.getName());
+            return Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getName() + " " + toJSONString());
         else
             try {
                 throw new Exception(player.getName() + "Is not currently online");
@@ -776,28 +778,31 @@ public class JChat {
     }
 
     /**
-     * Checks if the player is currently online Object can either be the players name or their {@link java.util.UUID}
+     * Checks if the player with the specified {@link java.util.UUID} is currently online.
      *
-     * @param player to check online status
-     * @return true if the argument was valid and the player is online false if not.
+     * @param player {@link java.util.UUID} to check online status
+     * @return true if the argument was valid and the player is online, false if not.
      */
-    private boolean isOnline(Object player) {
+    private boolean isOnline(UUID player) {
 
-        if ((UUID) player instanceof UUID) {
+        return Bukkit.getPlayer(player).isOnline();
 
-            return Bukkit.getPlayer((UUID) player).isOnline();
-        }
+    }
 
-        if ((player instanceof String)) {
+    /**
+     * Checks if the player with the specified name is currently online.
+     * <p>This is marked as depreciated due to Bukkit marking it as that, this is also very
+     * inefficient way to look up players as they are index by UUID now.
+     *
+     * @param player the players string name to check online status
+     * @return true if the argument was valid and the player is online, false if not.
+     */
+    @Deprecated
+    private boolean isOnline(String player) {
+        Validate.isTrue(player.matches("^[A-Za-z0-9_]{2,16}$"), "Invaild player name, must be between 2 and 16 characters");
 
-            if (((String) player).length() < 17)
+        return Bukkit.getPlayer(player).isOnline();
 
-                return Bukkit.getPlayer((String) player).isOnline();
-        }
-
-
-
-        return false;
     }
 
     /**
