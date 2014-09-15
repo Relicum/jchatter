@@ -31,7 +31,7 @@ Maven Dependency
     <dependency>
         <groupId>org.codemine</groupId>
         <artifactId>jchat</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.5-SNAPSHOT</version>
     </dependency>
 ```
 

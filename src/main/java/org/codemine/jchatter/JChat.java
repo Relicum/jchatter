@@ -28,10 +28,10 @@
 
 package org.codemine.jchatter;
 
+import com.google.gson.stream.JsonWriter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonWriter;
 import org.bukkit.entity.Player;
 
 import java.io.StringWriter;
