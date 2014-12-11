@@ -64,6 +64,7 @@ public class JChatSender {
      * The player will still require the correct permissions to run any click events
      * <P>This method is fairly thread safe as it is synchronized
      *
+     * @param message the pre made message in JSON format
      * @throws java.lang.NullPointerException      if a player can't be found.
      * @throws org.bukkit.command.CommandException if there was a problem dispatching the command
      */

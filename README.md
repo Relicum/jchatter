@@ -1,6 +1,9 @@
 JChatter - For sending JSON Chat messages
 ============================================
 
+Spigot 1.8 Only
+===
+
 
 ``JChatter is a custom implementation of various other Libs by @dorkrepublic @Spoonyloony @bobacadodl, many thanks for doing some of the ground work.`` 
 
@@ -24,40 +27,6 @@ Included is a simple method to send to a single player or send to all players.
 
 There is also an abstract save and load method which can be used to save and load messages that are used often. This makes it more efficient due to not having to build the JSON message each time.
 
-Maven Dependency
-----
-
-```XML
-    <dependency>
-        <groupId>org.codemine</groupId>
-        <artifactId>jchat</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
-    </dependency>
-```
-
-Maven Repo
-----
-
-```XML
-    <repository>
-        <id>relicum-snapshot</id>
-        <url>http://repository-relicum.forge.cloudbees.com/snapshot/</url>
-        <releases>
-            <enabled>false</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-```
-
-JavaDocs
----
-[JAVA DOCS](https://relicum.ci.cloudbees.com/job/JChatter/javadoc/)
-
-Jenkins
----
-[JENKINS CI](https://relicum.ci.cloudbees.com/job/JChatter/)
 
 **Pull requests gladly accepted, as well as feature requests, though a can't promise to impliment all requests**
 

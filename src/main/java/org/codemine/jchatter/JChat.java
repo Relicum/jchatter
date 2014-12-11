@@ -43,36 +43,29 @@ import java.util.regex.Pattern;
  * JChat is a simple fluentAPI for creating Hover and Click Json chat messages.
  * <p>It also has built in facilities to send the message to a player or all players or a
  * collection of players. What makes this different from other implementations is that it uses,
- * <p>
  * <tt>
  * This class has been inspired and built using some ideas and code by @bobacadodl and @spoonyloony and @dorkrepublic.
  * Big thanks for them for releasing their code. Without them I wouldn't of had the inspiration to customise this plugin.
  * </tt>
- * </p>
- * <strong><ol>
+ * <ol>
  * <li>NO REFLECTION</li>
  * <li>NO NMS CODE</li>
  * <li>NO USE OF CUSTOM PACKETS</li>
  * </ol>
- * <strong>This also supports unlimited number of events on a single message</strong>
- * </strong>
+ * <p><strong>This also supports unlimited number of events on a single message</strong>
  * <p>All messages are built using standard java code and it uses the vanilla minecraft TellRaw command to send the messages
  * from the console. Players require NO extra permissions. Also any Click Event of type run_command use the users
  * standard permissions.
- * <p/>
- * <p>
- * The instance of player below is using the players string name, you can also use a player UUID or the player object itself. Unlike when using {@link org.bukkit.block.CommandBlock}
+ *
+ * <p>The instance of player below is using the players string name, you can also use a player UUID or the player object itself. Unlike when using {@link org.bukkit.block.CommandBlock}
  * there is no @a to send to all players. Each message must be sent separately.
  * <tt>
  * Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player + " " + message);
  * </tt>
- * </p>
- * <p>
  * <tt>
  * Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
  * </tt>
- * </p>
- * As they have done all of JChatter is also allowed to be used in any way you choose.
+ * <p>As they have done all of JChatter is also allowed to be used in any way you choose.
  * <p>A basic usage example. This will demonstrates a lot of the features and the final line will send the JSON message to the
  * user with the name Relicum.
  * <pre>
@@ -103,7 +96,6 @@ import java.util.regex.Pattern;
  * pre made messages see {@link JChatSender} this is a simple example class, with synchronized static methods.
  * For most that class will most likely fulfil all your requirements. But once you have the JSON string you can impliment the sending
  * any way you like.
- * <br></br>
  * <pre>
  *  {"text":"","extra":[{"text":"[","color":"red","bold":true},{"text":"ADMIN","color":"blue","underlined":true,"italic":true,
  *  "clickEvent":{"action":"run_command","value":"/say hello"},"hoverEvent":{"action":"show_item","value":"{id:1s,Count:1b,
@@ -289,11 +281,11 @@ public class JChat {
 
     /**
      * Item tooltip. This displays a tooltip like an items Display name and Lore to the player when hovering over the text.
-     * <p>To use Color or styles use the & character followed by any Minecraft formatting code.
+     * <p>To use Color or styles use the &amp; character followed by any Minecraft formatting code.
      * To display a blank line in the lore just set the required line to "".
      *
      * @param title the title is the Item Display Title
-     * @param lore  the lore formatted as an List<String> as you normally would using ItemMeta
+     * @param lore  the lore formatted as an List as you normally would using ItemMeta
      * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
      */
     public JChat itemTooltip(final String title, final List<String> lore) {
@@ -305,21 +297,18 @@ public class JChat {
 
     /**
      * tooltipsWithValues extended method to create a tooltip which allows color codes and substitute values to be passed.
-     * <p>Color codes or styles many be passed in here using the '&' followed by a valid format code. They can be added in any order you like.
+     * <p>Color codes or styles many be passed in here using the '&amp;' followed by a valid format code. They can be added in any order you like.
      * <p>The message can contain as many place holders as you like place holders in the messages must be '%s' and you must
      * are required to have the same number of values to match the number of placeholders. Failure to do so will and it will
      * throw an MissingFormatArgumentException
-     * <p/>
      * <p>Values should be passed as the 2nd argument as a list of strings. The order you add them will be the order they are used to replace
      * placeholders.
-     * <p/>
      * <p>Like standard tooltips the onHover event will be applied to the text part that immediately proceeds it. While this function allow you
      * to input an entire line of text and styles all at once, it is still splitting them up to message parts, this is not a design fault, it is
      * the way the JSON message format requires.
      * <p>If you do not need to use placeholders then do not use this method use the standard tooltips. Failure to do this will
      * cause MissingFormatArgumentException to be thrown as the method is expecting it. See below for an example usage of this method.
-     * <p>
-     * <strong>player</strong> is an instance of {@link org.bukkit.entity.Player}. You are not required to use a player object to send the message,
+     * <p><strong>player</strong> is an instance of {@link org.bukkit.entity.Player}. You are not required to use a player object to send the message,
      * you can use the players name, the players UUID or if left blank it will send to all players. Please note you will need to roughly follow the
      * example below, especially on the instance creation do not pass in any arguments. As mentioned above the following onHover event is applied to
      * the last text part. In this case the "server" word. if you wish to have the effect applied to a different part of the message you will need to
@@ -333,7 +322,6 @@ public class JChat {
      *     .send(player);
      *     }
      * </pre>
-     * </p>
      * <p>
      * <pre>
      * {@code
@@ -344,16 +332,12 @@ public class JChat {
      *     .send(player);
      *     }
      * </pre>
-     * </p>
-     * <p>
      * <tt>NOTE CURRENTLY ONLY SINGLE LINE TOOLTIPSWITHVALUES IN THIS FORMAT ARE SUPPORTED AT THIS TIME, MULTI LINE WILL BE ADDED SOON</tt>
-     * </p>
-     * <p/>
      * <p>Currently it has a limitation of only being able to pass 2 ChatColor objects in a row. They can be one color and style OR 2 styles OR just one of either.
-     * this would be valid in the message part. "&a&oHello" This would display green and italic text. This is what I mean when you can only pass to ChatColor objects
-     * in a row. This is invalid <strong>"&a&o&lHello"</strong> The total message can have as many Chatcolors as you like provided they are not added more than 2 in a row.
+     * this would be valid in the message part. "&amp;a&amp;oHello" This would display green and italic text. This is what I mean when you can only pass to ChatColor objects
+     * in a row. This is invalid <strong>"&amp;a&amp;o&amp;lHello"</strong> The total message can have as many Chatcolors as you like provided they are not added more than 2 in a row.
      * I will soon be changing this to remove this limitation but it was hard enough with just the 2 options, allowing the developer complete freedom to the order they are
-     * added. These to are equal <strong>"&a&oHello"</strong> OR <strong>"&o&aHello"</strong> both result in identical formatting without the developer indicating in any way
+     * added. These to are equal <strong>"&amp;a&amp;oHello"</strong> OR <strong>"&amp;o&amp;aHello"</strong> both result in identical formatting without the developer indicating in any way
      * what order they are adding them.
      * </p>
      *
@@ -379,8 +363,8 @@ public class JChat {
 
     /**
      * Tooltip displayed with the onHover event.
-     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&'
-     * <p>To add multiple lines use '\n' or better still use a List<String> and set the element to " "
+     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&amp;'
+     * <p>To add multiple lines use '\n' or better still use a List and set the element to " "
      * <p>Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
      *
      * @param text the text that will appear when the onHover event is fired.
@@ -393,7 +377,7 @@ public class JChat {
 
     /**
      * Tooltip displayed with the onHover event.
-     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&'
+     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&amp;'
      * <p>To add multiple lines set the element to " ". This will produce a new line for you
      * <p>Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
      *
@@ -407,7 +391,7 @@ public class JChat {
 
     /**
      * Tooltip displayed with the onHover event.
-     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&'
+     * <p>To add color use the standard minecraft classic color code formatting using the prefix '&amp;'
      * <p>To add multiple lines set the relevant array element to " ". This will produce a new line for you.
      * <p>Can include Unicode character support. The format is \\u#### in which # represents the unique unicode number.
      *
@@ -641,7 +625,6 @@ public class JChat {
     /**
      * Converts the message into a jSON string.
      * There is no need to call this method if you are building the message on the fly to send now just call:
-     * <strong>
      * <ol>
      * <li>
      * {@link JChat#send(org.bukkit.entity.Player)}
@@ -653,8 +636,6 @@ public class JChat {
      * {@link JChat#send()}
      * </li>
      * </ol>
-     * </strong>
-     * <p/>
      * There is a simple example class {@link org.codemine.jchatter.JChatSender} that you can use to send the message to player/players in the future.
      *
      * @return the JSON string representing the complete message. You can save this string direct to any file
@@ -695,7 +676,7 @@ public class JChat {
      *
      * @param player the players string name the message is sent to
      * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
-     * @throws java.lang.RuntimeException
+     * @throws java.lang.RuntimeException if error happens
      */
     @Deprecated
     public boolean send(String player) throws RuntimeException {
@@ -718,7 +699,7 @@ public class JChat {
      *
      * @param player the players full UUID
      * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
-     * @throws java.lang.RuntimeException
+     * @throws java.lang.RuntimeException if error happens
      */
     public boolean send(UUID player) throws RuntimeException {
         Player p;
@@ -763,7 +744,6 @@ public class JChat {
      * requires a player name, you can't use say @a to send to all. It is also
      * not possible to send a broadcast due to that not currently accepting JSON
      * chat components
-     * <p/>
      * //TODO Add in fully functional error checking and reporting
      *
      * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem

@@ -6,7 +6,7 @@
     <artifactId>jchat</artifactId>
     <packaging>jar</packaging>
     <name>JChatter</name>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <resources>
@@ -56,8 +56,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -66,22 +66,34 @@
                 <version>2.9.1</version>
                 <executions>
                     <execution>
-                        <id>non-aggregate</id>
+                        <id>aggregate-jar</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>javadoc</goal>
+                            <goal>aggregate-jar</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <charset>UTF-8</charset>
                     <links>
-                        <link>http://jd.bukkit.org/beta/apidocs/</link>
+                        <link>http://jd.bukkit.org/dev/apidocs/</link>
                     </links>
                     <linksource>true</linksource>
-                    <outputDirectory>${project.build.outputDirectory}/apidocs</outputDirectory>
-                    <reportOutputDirectory>${project.reporting.outputDirectory}/apidocs</reportOutputDirectory>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -93,9 +105,9 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
