@@ -1,4 +1,4 @@
-JChatter - For sending JSON Chat messages
+JChatter 1.0.7 - Sending JSON Chat messages
 ============================================
 
 Spigot 1.8 Only

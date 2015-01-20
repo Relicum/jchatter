@@ -56,7 +56,6 @@ import java.util.regex.Pattern;
  * <p>All messages are built using standard java code and it uses the vanilla minecraft TellRaw command to send the messages
  * from the console. Players require NO extra permissions. Also any Click Event of type run_command use the users
  * standard permissions.
- *
  * <p>The instance of player below is using the players string name, you can also use a player UUID or the player object itself. Unlike when using {@link org.bukkit.block.CommandBlock}
  * there is no @a to send to all players. Each message must be sent separately.
  * <tt>
@@ -155,6 +154,35 @@ public class JChat {
         }
         latest.text = text;
         _dirty = true;
+        return this;
+    }
+
+    /**
+     * Text that forms part of the message, allowing color and style codes and placeholders to be used.
+     * <p>For full usage instructions see {@link org.codemine.jchatter.JChat#tooltipsWithValues(String, String...)} as the functionality
+     * is almost identical. Except this is for adding the message text body not a tooltip !
+     *
+     * @param message the text that will be used for the text message. Placeholders MUST be <strong>%s</strong>
+     * @param subs    the subs the values that are used to replace placeholders in the message. You must pass the exact number of values as you have placeholders.
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     * @throws java.util.MissingFormatArgumentException if the number of placeholders and subs don't match
+     */
+    public JChat text(String message, String... subs) throws MissingFormatArgumentException {
+
+        Validate.notNull(message, "The message can not be null");
+        Matcher matcher = _pattern.matcher(message);
+        int count = 0;
+        while (matcher.find())
+            count++;
+
+        if (count == 0 || count != subs.length)
+            throw new MissingFormatArgumentException("Error: The number of values do not match the number of placeholders");
+
+        message = String.format(message, subs);
+        //  System.out.println("Message length is currently " + message.length());
+        //  System.out.println(message);
+        splitPartsOnColor(message);
+
         return this;
     }
 
