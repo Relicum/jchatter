@@ -56,6 +56,7 @@ import java.util.regex.Pattern;
  * <p>All messages are built using standard java code and it uses the vanilla minecraft TellRaw command to send the messages
  * from the console. Players require NO extra permissions. Also any Click Event of type run_command use the users
  * standard permissions.
+ * <p>
  * <p>The instance of player below is using the players string name, you can also use a player UUID or the player object itself. Unlike when using {@link org.bukkit.block.CommandBlock}
  * there is no @a to send to all players. Each message must be sent separately.
  * <tt>

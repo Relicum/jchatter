@@ -46,13 +46,13 @@ public class JChatter extends JavaPlugin {
 
         getLogger().info("JChatter was written by Relicum but includes work by dorkrepublic Spoonyloony bobacadodl");
         getLogger().info("More details can be found here https://github.com/Relicum/jchatter");
-
     }
 
     @Override
     public void onDisable() {
 
     }
+
 
     /**
      * This method is purely for my testing it is not live.
@@ -69,6 +69,7 @@ public class JChatter extends JavaPlugin {
         }
 
     }
+
 
     /**
      * Instantiates a new JChat Object
