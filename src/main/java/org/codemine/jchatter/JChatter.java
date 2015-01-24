@@ -46,6 +46,21 @@ public class JChatter extends JavaPlugin {
 
         getLogger().info("JChatter was written by Relicum but includes work by dorkrepublic Spoonyloony bobacadodl");
         getLogger().info("More details can be found here https://github.com/Relicum/jchatter");
+
+/*        jChat = new JChat();
+
+        jChat
+                .coloredText("&a&lHelp me");
+                jChat.then()
+                .coloredText("&a&l&oMore&c stuff")
+                        .then()
+                        .text("peter pan")
+                        .color(ChatColor.BLUE)
+                        .command("/say heeelooooooo")
+                        .itemTooltip("&6My Title", Arrays.asList("&4first", " ", "&b this is the second"));*/
+
+
+        // System.out.println(jChat.toJSONString());
     }
 
     @Override
@@ -57,16 +72,9 @@ public class JChatter extends JavaPlugin {
     /**
      * This method is purely for my testing it is not live.
      */
+
     private void join(PlayerJoinEvent e) {
 
-        JChat jChat = new JChat();
-        try {
-            jChat.then("&a&oHi %s hope you like the %s server", e.getPlayer().getName(), "Factions")
-                    .tooltipsWithValues("&aHi %s hope you like &b%s server", e.getPlayer().getName(), "Factions")
-                    .send(e.getPlayer());
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
 
     }
 

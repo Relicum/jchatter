@@ -111,8 +111,9 @@ public class JChat {
     private final List<JChatPart> _jChatParts;
     private String _jsonString;
     private boolean _dirty;
-    private boolean _save = true;
+
     private Pattern _pattern = Pattern.compile("%s");
+    Pattern pattern = Pattern.compile("((?<full>((?<col>([&{1}][a-fklmnor0-9{1}]))?(?<stl>([&{1}])[a-fklmnor0-9{1}]){1,})))");
 
     /**
      * Instantiates a new JChat Object
@@ -134,7 +135,7 @@ public class JChat {
      */
     public JChat() {
 
-        _jChatParts = new ArrayList<JChatPart>();
+        _jChatParts = new ArrayList<>();
         _jChatParts.add(new JChatPart());
         _jsonString = null;
         _dirty = false;
@@ -180,11 +181,151 @@ public class JChat {
             throw new MissingFormatArgumentException("Error: The number of values do not match the number of placeholders");
 
         message = String.format(message, subs);
-        //  System.out.println("Message length is currently " + message.length());
-        //  System.out.println(message);
-        splitPartsOnColor(message);
 
+        return coloredText(message);
+
+    }
+
+    /**
+     * Colored text using &amp; to format color and style for this message part.
+     *
+     * @param text the text that will be used for the text message.
+     * @return the {@link org.codemine.jchatter.JChat} instance of itself to allow chaining of methods
+     */
+    public JChat coloredText(String text) {
+
+        JChatPart latest = latest();
+
+        if (latest.hasText()) {
+            throw new IllegalStateException("text for this message part is already set");
+        }
+
+        if (!(text.contains("&"))) {
+            throw new IllegalStateException("this message text does not contain any color code use alternative method text instead");
+        }
+
+        int max = text.length();
+        //First calculate the number of regions the input has
+        Matcher matcher = pattern.matcher(text);
+        int regionFound = 0;
+        while (matcher.find()) {
+
+            if (max == matcher.end()) {
+                //Check the input does not end with a color or style code if it does throw an error
+                throw new IllegalArgumentException("Can not have color codes at the end of the text please remove them and run again");
+            }
+            regionFound++;
+        }
+
+        matcher.reset();
+
+        // System.out.println("For the text " + text + " it has found " + regionFound + " regions");
+
+        String remaining = text;
+        int lastEnd = 0;
+        while (matcher.find()) {
+
+
+            //Start parsing input that only has a region
+
+            if (regionFound == 1) {
+
+                //if the regions found is 1 this means the region MUST start at the start of the input
+                //if it doesn't throw an error
+                if (matcher.start() != 0) {
+
+                    throw new IllegalArgumentException("The text line must start with a color or style code");
+                }
+                ChatColor color = ChatColor.WHITE;
+                List<ChatColor> style = new ArrayList<>();
+                String codeMatches = matcher.group().replaceAll("&", "");
+                //     System.out.println(codeMatches);
+                for (int i = 0; i < codeMatches.length(); i++) {
+
+
+                    char theCode = codeMatches.charAt(i);
+
+                    if (ChatColor.getByChar(theCode).isColor()) {
+
+                        color = ChatColor.getByChar(theCode);
+                    } else if (ChatColor.getByChar(theCode).isFormat()) {
+
+                        style.add(ChatColor.getByChar(theCode));
+
+                    }
+                }
+
+                latest().text = transAndStrip(text);
+                latest().color = color;
+                if (style.size() > 0)
+                    latest().styles.addAll(style);
+                _dirty = true;
+
+
+            }
+
+            //Parse input that has multiple regions
+
+            else {
+
+                //      System.out.println("Multi regions still to do");
+
+                String message = "";
+                remaining = text.substring(matcher.end(), max);
+
+                Matcher subMatcher = pattern.matcher(remaining);
+
+                if (subMatcher.find()) {
+                    //        System.out.println("End is " + matcher.end());
+                    //        System.out.println("Sub start is " + subMatcher.start());
+                    remaining = remaining.substring(0, subMatcher.start());
+                    message = transAndStrip(remaining);
+                } else {
+
+                    message = transAndStrip(remaining);
+                }
+
+                ChatColor color = ChatColor.WHITE;
+                List<ChatColor> style = new ArrayList<>();
+                String codeMatches = matcher.group().replaceAll("&", "");
+                //    System.out.println(codeMatches);
+                for (int i2 = 0; i2 < codeMatches.length(); i2++) {
+
+
+                    char theCode = codeMatches.charAt(i2);
+
+                    if (ChatColor.getByChar(theCode).isColor()) {
+
+                        color = ChatColor.getByChar(theCode);
+                    } else if (ChatColor.getByChar(theCode).isFormat()) {
+
+                        style.add(ChatColor.getByChar(theCode));
+
+                    }
+                }
+
+                if (latest().hasText())
+                    then();
+                latest().text = message;
+                latest().color = color;
+                if (style.size() > 0)
+                    latest().styles.addAll(style);
+                _dirty = true;
+
+
+            }
+
+
+        }
+
+        //Global end return instance of itself
         return this;
+
+    }
+
+    private String transAndStrip(String input) {
+
+        return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', input));
     }
 
     /**
@@ -773,7 +914,7 @@ public class JChat {
      * requires a player name, you can't use say @a to send to all. It is also
      * not possible to send a broadcast due to that not currently accepting JSON
      * chat components
-     * //TODO Add in fully functional error checking and reporting
+     *
      *
      * @return the {@link java.lang.Boolean} true if no errors occured, false if there was a problem
      */
