@@ -1,7 +1,7 @@
-JChatter 1.0.9 - Sending JSON Chat messages
+JChatter 1.1.0 - Sending JSON Chat messages
 ============================================
 
-Spigot 1.8 Only
+Spigot or Bukkit 1.8 and 1.8.3 Only
 ===
 
 
